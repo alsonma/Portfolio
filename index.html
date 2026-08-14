@@ -27,6 +27,8 @@
   <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
 
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+
 </head>
 
 <body class="index-page">
@@ -679,7 +681,7 @@
           </div>
 
           <div class="col-lg-7">
-            <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="200">
+            <form method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="200" id="contactform" action="#">
               <div class="row gy-4">
 
                 <div class="col-md-6">
@@ -703,13 +705,26 @@
                 </div>
 
                 <div class="col-md-12 text-center">
-                  <div class="loading">Loading</div>
-                  <div class="error-message"></div>
-                  <div class="sent-message">Your message has been sent. Thank you!</div>
+                  <!-- Loading Message -->
+                  <div class="loading" style="display: none;">
+                      Sending...
+                  </div>
 
-                  <button type="submit">Send Message</button>
+                  <!-- Failed Message -->
+                  <div class="error-message" style="display: none;">
+                      Failed to send your message. Please try again.
+                  </div>
+
+                  <!-- Success Message -->
+                  <div class="sent-message" style="display: none;">
+                      Your message has been sent. Thank you!
+                  </div>
+
+                  <!-- Submit Button -->
+                  <button type="submit">
+                      Send Message
+                  </button>
                 </div>
-
               </div>
             </form>
           </div><!-- End Contact Form -->
@@ -729,7 +744,7 @@
         <p>© <span>Copyright</span> <strong class="px-1 sitename">iPortfolio</strong> <span>All Rights Reserved</span></p>
       </div>
       <div class="credits">
-        <!-- All the links in the footer should remain intact. -->
+        <!-  All the links in the footer should remain intact. -->
         <!-- You can delete the links only if you've purchased the pro version. -->
         <!-- Licensing information: https://bootstrapmade.com/license/ -->
         <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
@@ -737,7 +752,7 @@
       </div>
     </div>
 
-  </footer> --> -->
+  </footer> --> 
 
   <!-- Scroll Top -->
   <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
@@ -759,6 +774,62 @@
 
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
+
+  <script>
+  const scriptURL = "https://script.google.com/macros/s/AKfycbwOGr0P-EhqPs876Q05uxCpiHQlUVWDNnlxi1PQRSIoGt1owDtfKD_4J7CHEzAHdnQzkw/exec";
+  const form = document.getElementById("contactform");
+  const loading = form.querySelector(".loading");
+  const successMessage = form.querySelector(".sent-message");
+  const errorMessage = form.querySelector(".error-message");
+  form.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    successMessage.style.display = "none";
+    errorMessage.style.display = "none";
+
+    loading.style.display = "block";
+
+    let data = {
+        name: document.getElementById("name-field").value,
+        email: document.getElementById("email-field").value,
+        subject: document.getElementById("subject-field").value,
+        message: document.getElementById("message-field").value
+    };
+
+    fetch(scriptURL, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify(data)
+    })
+
+
+    .then(result => {
+
+        loading.style.display = "none";
+
+        successMessage.innerText =
+            "Your message has been sent. Thank you!";
+
+        successMessage.style.display = "block";
+
+        form.reset();
+
+    })
+
+    .catch(error => {
+
+        loading.style.display = "none";
+
+        errorMessage.innerText =
+            "Failed to send your message. Please try again.";
+
+        errorMessage.style.display = "block";
+
+    });
+
+});
+</script>
 
 </body>
 
